@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/userModel");
+const UserApp = require("../models/userAppModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const auth = require("../auth");
@@ -151,4 +152,5 @@ router.get("/", auth, async (req, res) => {
     id: user._id,
   });
 });
+
 module.exports = router;

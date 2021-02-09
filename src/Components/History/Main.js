@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
+import React, { useState, useEffect } from "react";
 import { Input, InputLabel } from "@material-ui/core";
 import { Link, withRouter } from "react-router-dom";
 import * as ROUTES from "../../Routes/Routes.js";
@@ -7,18 +6,67 @@ import Navigation from "../NavBar/Navigation";
 import Add from "./Add";
 import History from "./History";
 import "./Main.css";
-import Select from "react-select";
+import ReactSearchBox from "react-search-box";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import SearchField from "react-search-field";
 
-function Main(props) {
+function Main() {
+  const [input, setInput] = useState("");
+  const [PatientsList, setPatientsList] = useState();
   const [isHistoryOpen, setIsHistoryOpen] = useState(true);
-  const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
+  const userToken = useSelector((state) => state.userInfo.token);
+  const [userData, setUserData] = useState(null);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const getUserInfo = async () => {
+    try {
+      console.log(userToken, "token");
+      const config = {
+        headers: {
+          "content-type": "application/json",
+        },
+      };
+      const res = await axios.get("http://localhost:3001/userapps/", config);
+      setUserData(res.data);
+    } catch (err) {
+      alert(err);
+    }
+  };
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+  useEffect(() => {
+    console.log(userData, "userInfok");
+  }, [userData]);
 
-  const MyComponent = () => <Select options={options} />;
+  const onChange = async (e) => {
+    if (userData !== null) {
+      setFilteredUsers(userData.users);
+      console.log(filteredUsers);
 
+      const PatientsList = ({ patientsList = [] }) => {
+        return (
+          <>
+            {filteredUsers.map((data, index) => {
+              if (data) {
+                return (
+                  <div key={data.name}>
+                    <h1>{data.name}</h1>
+                  </div>
+                );
+              }
+              return null;
+            })}
+          </>
+        );
+      };
+
+      const filtered = filteredUsers.filter((patient) => {
+        return patient.name.toLowerCase().includes(input.toLowerCase());
+      });
+      setPatientsList(filteredUsers);
+    }
+  };
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       <Navigation />
@@ -34,7 +82,11 @@ function Main(props) {
                 width: "100%",
               }}
             >
-              <Select options={options} className="filter" />
+              <SearchField
+                placeholder="Search..."
+                onChange={onChange(input)}
+                classNames="test-class"
+              />
               <button
                 className="buttonstat2"
                 onClick={() => setIsHistoryOpen(true)}

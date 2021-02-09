@@ -2,45 +2,21 @@ import React, { useState, useContext } from "react";
 import { Input, InputLabel } from "@material-ui/core";
 import { Link, withRouter } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import "./index.css";
 import * as ROUTES from "../../Routes/Routes.js";
 import UserContext from "../../Context/context";
 import Axios from "axios";
+import submit from "./GetUser";
 
 function HomePage(props) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [error, setError] = useState();
   const [token, setToken] = useState("");
+  const dispatch = useDispatch();
 
   const { setUserData } = useContext(UserContext);
-
-  const submit = async (e) => {
-    e.preventDefault();
-    try {
-      const loginUser = { email, password };
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      const loginRes = await Axios.post(
-        "http://localhost:3001/users/login",
-        loginUser,
-        config
-      );
-      setUserData({
-        token: loginRes.data.token,
-        user: loginRes.data.user,
-      });
-      localStorage.setItem("auth-token", loginRes.data.token);
-      props.history.push("/estadisticas");
-    } catch (err) {
-      err.response.data.msg && setError(err.response.data.msg);
-      alert("El correo o contraseña digitados son incorrectos");
-    }
-  };
 
   return (
     <div className="body">
@@ -76,7 +52,10 @@ function HomePage(props) {
             />
           </div>
           <Link to={ROUTES.STATS}>
-            <button className="button" onClick={submit}>
+            <button
+              className="button"
+              onClick={() => submit(email, password, dispatch)}
+            >
               {" "}
               INGRESAR
             </button>

@@ -47,4 +47,5 @@ app.get("/confirmation/:token", async (req, res) => {
   return res.redirect("http://localhost:3000/");
 });
 //Include routes
-app.use("/users", require("./uroutes/userRouter"));
+app.use("/users", require("./uroutes/doctorRoutes"));
+app.use("/userapps", require("./uroutes/patientRoutes"));
