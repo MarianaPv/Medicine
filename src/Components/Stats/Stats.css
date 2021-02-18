@@ -18,8 +18,8 @@ html {
   justify-content: center;
   align-content: center;
   align-items: start;
-  height: 80%;
-  width: 95%;
+  height: 70%;
+  width: 100%;
   background-color: #6a9fb4;
   display: flex;
   flex-direction: column;
@@ -50,18 +50,46 @@ html {
   flex-direction: column;
 }
 
+.chart {
+  width: 40vw;
+  margin-top: 10vh;
+  margin-left: 6vw;
+  margin-bottom: 6vh;
+  margin-right: 1.5vw;
+  height: 30vh;
+}
+
+.chartContainer {
+  background-color: whitesmoke;
+  display: flex;
+  flex-direction: row;
+}
+
+.p {
+  cursor: pointer;
+}
+
+.p:hover {
+  background-color: rgba(83, 124, 212, 0.199);
+}
+
 .filter {
   margin-top: 4vh;
   width: 100%;
   height: 100%;
 }
 .wave {
-  margin-top: 70vh;
-  margin-left: -1vw;
-  grid-column: 1;
-  height: 30%;
-  width: 104%;
+  margin-top: -15vh;
+  margin-bottom: 0;
+  padding: 0;
+  height: 25%;
+  width: 105%;
+  margin-left: -2vw;
+  display: flex;
   position: absolute;
+  background-image: url("whiteb.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .arrow {
   display: grid;

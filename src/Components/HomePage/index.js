@@ -22,7 +22,7 @@ function HomePage(props) {
     <div className="body">
       <div className="square">
         <div className="content">BIENVENIDO</div>
-        <div className="form">
+        <div className="form22">
           <div>
             <InputLabel
               style={{ fontFamily: "Jost", color: "black" }}

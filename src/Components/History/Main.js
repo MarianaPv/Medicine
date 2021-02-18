@@ -12,15 +12,15 @@ import axios from "axios";
 import SearchField from "react-search-field";
 
 function Main() {
-  const [input, setInput] = useState("");
-  const [PatientsList, setPatientsList] = useState();
+  const [selected, setSelected] = useState();
+  const [patientsList, setPatientsList] = useState();
+  const [searchedUser, setSearchedUser] = useState();
   const [isHistoryOpen, setIsHistoryOpen] = useState(true);
   const userToken = useSelector((state) => state.userInfo.token);
   const [userData, setUserData] = useState(null);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const getUserInfo = async () => {
     try {
-      console.log(userToken, "token");
       const config = {
         headers: {
           "content-type": "application/json",
@@ -28,6 +28,8 @@ function Main() {
       };
       const res = await axios.get("http://localhost:3001/userapps/", config);
       setUserData(res.data);
+
+      console.log(userData, "user");
     } catch (err) {
       alert(err);
     }
@@ -36,36 +38,24 @@ function Main() {
     getUserInfo();
   }, []);
   useEffect(() => {
-    console.log(userData, "userInfok");
-  }, [userData]);
+    console.log(selected);
+  }, [userData, searchedUser, selected]);
 
-  const onChange = async (e) => {
+  const onChange = (ele) => {
     if (userData !== null) {
       setFilteredUsers(userData.users);
-      console.log(filteredUsers);
 
-      const PatientsList = ({ patientsList = [] }) => {
-        return (
-          <>
-            {filteredUsers.map((data, index) => {
-              if (data) {
-                return (
-                  <div key={data.name}>
-                    <h1>{data.name}</h1>
-                  </div>
-                );
-              }
-              return null;
-            })}
-          </>
-        );
-      };
+      setSearchedUser(ele);
 
-      const filtered = filteredUsers.filter((patient) => {
-        return patient.name.toLowerCase().includes(input.toLowerCase());
-      });
-      setPatientsList(filteredUsers);
+      // if (filteredUsers.includes(ele) === true) {
+      //   setPatientsList(filteredUsers.filter(ele));
+      //   console.log("hurray");
+      // }
     }
+  };
+
+  const selectedUser = (ele) => {
+    console.log(patientsList, "nombre");
   };
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -82,11 +72,37 @@ function Main() {
                 width: "100%",
               }}
             >
-              <SearchField
-                placeholder="Search..."
-                onChange={onChange(input)}
-                classNames="test-class"
-              />
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <SearchField
+                  placeholder="Buscar..."
+                  onChange={(ele) => onChange(ele)}
+                  classNames="test-class"
+                />
+                {filteredUsers
+                  .filter((ele) => {
+                    if (searchedUser === "") {
+                      return null;
+                    } else if (
+                      ele.displayName
+                        .toLowerCase()
+                        .includes(searchedUser.toLowerCase())
+                    ) {
+                      return ele;
+                    }
+                  })
+                  .map((ele, index) => {
+                    if (filteredUsers) {
+                      return (
+                        <div key={ele} style={{ backgroundColor: "white" }}>
+                          <p onClick={() => setSelected(ele.displayName)}>
+                            {ele.displayName}
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}{" "}
+              </div>
               <button
                 className="buttonstat2"
                 onClick={() => setIsHistoryOpen(true)}
